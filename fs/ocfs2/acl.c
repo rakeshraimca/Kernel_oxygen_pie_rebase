@@ -247,11 +247,11 @@ int ocfs2_set_acl(handle_t *handle,
 			if (ret)
 				return ret;
 
-			ret = ocfs2_acl_set_mode(inode, di_bh,
-						 handle, mode);
-			if (ret)
-				return ret;
-
+				ret = ocfs2_acl_set_mode(inode, di_bh,
+							 handle, mode);
+				if (ret)
+					return ret;
+			}
 		}
 		break;
 	case ACL_TYPE_DEFAULT:
