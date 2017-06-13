@@ -286,6 +286,12 @@ config CPU_WAKE_BOOST
 	  make the display power on faster, as well as ensures good performance
 	  immediately after powering on the display.
 
+config FINGERPRINT_BOOST
+	bool "Fingerprint Boost"
+	default y
+	help
+	  Boosts available CPUs to max frequency on fingerprint sensor input.
+
 menu "x86 CPU frequency scaling drivers"
 depends on X86
 source "drivers/cpufreq/Kconfig.x86"
