@@ -19,8 +19,18 @@
 #include <linux/moduleparam.h>
 #include "power.h"
 
+#ifdef CONFIG_BOEFFLA_WL_BLOCKER
+#include "boeffla_wl_blocker.h"
 
 
+
+
+char list_wl_search[LENGTH_LIST_WL_SEARCH] = {0};
+bool wl_blocker_active = false;
+bool wl_blocker_debug = false;
+
+static void wakeup_source_deactivate(struct wakeup_source *ws);
+#endif
 
 
 /*
@@ -534,47 +544,58 @@ static void wakeup_source_activate(struct wakeup_source *ws)
 	trace_wakeup_source_activate(ws->name, cec);
 }
 
-
-
-static bool wakeup_source_blocker(struct wakeup_source *ws)
+#ifdef CONFIG_BOEFFLA_WL_BLOCKER
+// AP: Function to check if a wakelock is on the wakelock blocker list
+static bool check_for_block(struct wakeup_source *ws)
 {
-        unsigned int wslen = 0;
+	char wakelock_name[52] = {0};
+	int length;
 
-        if (ws) {
-                wslen = strlen(ws->name);
+	// if debug mode on, print every wakelock requested
+	if (wl_blocker_debug)
+		printk("Boeffla WL blocker: %s requested\n", ws->name);
 
-                if ((!enable_ipa_ws && !strncmp(ws->name, "IPA_WS", wslen)) ||
-                        (!enable_wlan_extscan_wl_ws &&
-                                !strncmp(ws->name, "wlan_extscan_wl", wslen)) ||
-                        (!enable_wlan_wow_wl_ws &&
-				!strncmp(ws->name, "wlan_wow_wl", wslen)) ||
-                        (!enable_wlan_ws &&
-                                !strncmp(ws->name, "wlan", wslen)) ||
-                        (!enable_timerfd_ws &&
-                                !strncmp(ws->name, "[timerfd]", wslen)) ||
-                        (!enable_netmgr_wl_ws &&
-				!strncmp(ws->name, "netmgr_wl", wslen)) ||
-			(!enable_wlan_ipa_ws &&
-				!strncmp(ws->name, "wlan_ipa", wslen)) ||
-			(!enable_wlan_pno_wl_ws &&
-				!strncmp(ws->name, "wlan_pno_wl", wslen)) ||
-			(!enable_wcnss_filter_lock_ws &&
-				!strncmp(ws->name, "wcnss_filter_lock", wslen)) ||
-                        (!enable_netlink_ws &&
-                                !strncmp(ws->name, "NETLINK", wslen))) {
+	// if there is no list of wakelocks to be blocked, exit without futher checking
+	if (!wl_blocker_active)
+		return false;
 
-                        if (ws->active) {
-                                wakeup_source_deactivate(ws);
-                                pr_info("forcefully deactivate wakeup source: %s\n",
-                                        ws->name);
-                        }
+	// only if ws structure is valid
+	if (ws)
+	{
+		// wake lock names handled have maximum length=50 and minimum=1
+		length = strlen(ws->name);
+		if ((length > 50) || (length < 1))
+			return false;
 
-                        return true;
-                }
-        }
+		// check if wakelock is in wake lock list to be blocked
+		sprintf(wakelock_name, ";%s;", ws->name);
 
-        return false;
+		if(strstr(list_wl_search, wakelock_name) == NULL)
+			return false;
+
+
+		// wake lock is in list, print it if debug mode on
+		if (wl_blocker_debug)
+			printk("Boeffla WL blocker: %s blocked\n", ws->name);
+
+		// if it is currently active, deactivate it immediately + log in debug mode
+		if (ws->active)
+		{
+			wakeup_source_deactivate(ws);
+
+			if (wl_blocker_debug)
+				printk("Boeffla WL blocker: %s killed\n", ws->name);
+		}
+
+
+		// finally block it
+		return true;
+	}
+
+	// there was no valid ws structure, do not block by default
+	return false;
 }
+#endif
 
 /**
  * wakeup_source_report_event - Report wakeup event using the given source.
@@ -583,7 +604,11 @@ static bool wakeup_source_blocker(struct wakeup_source *ws)
 static void wakeup_source_report_event(struct wakeup_source *ws)
 {
 
-if (!wakeup_source_blocker(ws)) {
+
+#ifdef CONFIG_BOEFFLA_WL_BLOCKER
+	if (!check_for_block(ws))	// AP: check if wakelock is on wakelock blocker list
+	{
+#endif
 		ws->event_count++;
 		/* This is racy, but the counter is approximate anyway. */
 		if (events_check_enabled)
@@ -591,7 +616,10 @@ if (!wakeup_source_blocker(ws)) {
 
 		if (!ws->active)
 			wakeup_source_activate(ws);
-}
+#ifdef CONFIG_BOEFFLA_WL_BLOCKER
+	}
+#endif
+
 }
 
 /**
@@ -640,6 +668,7 @@ void pm_stay_awake(struct device *dev)
 	spin_unlock_irqrestore(&dev->power.lock, flags);
 }
 EXPORT_SYMBOL_GPL(pm_stay_awake);
+
 
 
 /**
@@ -813,7 +842,10 @@ void pm_print_active_wakeup_sources(void)
 	list_for_each_entry_rcu(ws, &wakeup_sources, entry) {
 		if (ws->active) {
 			pr_info("active wakeup source: %s\n", ws->name);
-			active = 1;
+#ifdef CONFIG_BOEFFLA_WL_BLOCKER
+			if (!check_for_block(ws))	// AP: check if wakelock is on wakelock blocker list
+#endif
+				active = 1;
 		} else if (!active &&
 			   (!last_activity_ws ||
 			    ktime_to_ns(ws->last_time) >

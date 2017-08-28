@@ -319,6 +319,18 @@ config CPU_FREQ_DEFAULT_GOV_SMARTMAX_EPS
         Use the CPUFreq governor 'smartmax_eps' as default. 
 
 
+config CPU_FREQ_DEFAULT_GOV_ELECTRON_ADVANCE
+	bool "electron_advance"
+	select CPU_FREQ_GOV_ELECTRON_ADVANCE
+	help
+	  Use the CPUFreq governor 'electron_advance' as default. This allows
+	  you to get a full dynamic cpu frequency capable system by simply
+	  loading your cpufreq low-level hardware driver, using the
+	  'electron_advance' governor for latency-sensitive workloads.
+
+
+
+
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -677,6 +689,12 @@ config CPU_FREQ_GOV_DYNAMIC_INTERACTIVE
         depends on CPU_FREQ
         help
           'dynamic_interactive' - another tuned interactive with extra options
+
+config CPU_FREQ_GOV_ELECTRON_ADVANCE
+	tristate "'electron_advance' cpufreq governor"
+	depends on CPU_FREQ
+	help
+	  'electron_advance' - another tuned interactive with extra options
 
 config FINGERPRINT_BOOST
 	bool "Fingerprint Boost"
