@@ -72,6 +72,7 @@ static int pix_overflow_error_count[VFE_MAX] = { 0 };
 #define ISPIF_USE_DEFAULT_THRESHOLD (0)
 #define ISPIF_CALCULATE_THRESHOLD (1)
 
+
 static int msm_ispif_clk_ahb_enable(struct ispif_device *ispif, int enable);
 static int ispif_close_node(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh);
 static long msm_ispif_subdev_ioctl_unlocked(struct v4l2_subdev *sd,
@@ -1414,7 +1415,8 @@ static int msm_ispif_stop_frame_boundary(struct ispif_device *ispif,
 		rc = readl_poll_timeout(ispif->base + intf_addr, stop_flag,
 					(stop_flag & 0xF) == 0xF,
 					ISPIF_TIMEOUT_SLEEP_US,
-					(params->reserved_param ? params->reserved_param : ISPIF_TIMEOUT_ALL_US));
+					ISPIF_TIMEOUT_ALL_US);
+
 		if (rc < 0)
 			pr_err("ISPIF stop frame boundary timeout\n");
 		if (cid_right_mask) {

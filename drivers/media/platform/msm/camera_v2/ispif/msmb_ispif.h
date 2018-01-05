@@ -120,6 +120,7 @@ struct msm_ispif_param_data {
 	struct msm_ispif_params_entry entries[MAX_PARAM_ENTRIES];
 	uint32_t reserved_param; /*Added from Xiaomi*/
 };
+
 struct msm_isp_info {
 	uint32_t max_resolution;
 	uint32_t id;
