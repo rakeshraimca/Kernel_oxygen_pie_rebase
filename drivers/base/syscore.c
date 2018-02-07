@@ -59,10 +59,10 @@ int syscore_suspend(void)
 
 	/* Return error code if there are any wakeup interrupts pending. */
 	if (pm_wakeup_pending()) {
-		if (wakeup_irq_abort_suspend == false) {
+		//if (wakeup_irq_abort_suspend == false) {
 			pm_get_active_wakeup_sources(suspend_abort, MAX_SUSPEND_ABORT_LEN);
 			log_suspend_abort_reason(suspend_abort);
-		}
+		//}
 		pr_err("PM: Abort system core suspend, wakeup interrupt or wakeup source detected");
 		return -EBUSY;
 	}

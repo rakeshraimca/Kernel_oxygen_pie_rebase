@@ -5896,7 +5896,6 @@ static int msm8x16_wcd_codec_probe(struct snd_soc_codec *codec)
 
 #ifdef CONFIG_SOUND_CONTROL
 	sound_control_codec_ptr = codec;
-#endif
 	pr_info("msm8x16_wcd codec probe...\n");
 	fauxsound_codec_ptr = codec;
 #endif
