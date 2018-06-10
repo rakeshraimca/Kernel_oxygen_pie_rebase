@@ -64,6 +64,11 @@ Module.symvers
 include/config
 include/generated
 arch/*/include/generated
+AnyKernel2/
+Builds/
+aarch64-linux-android/
+linux-stable.sh
+out/
 
 # stgit generated dirs
 patches-*
