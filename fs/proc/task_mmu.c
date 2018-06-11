@@ -375,27 +375,8 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma, int is_pid)
 			goto done;
 		}
 
-		tid = pid_of_stack(priv, vma, is_pid);
-		if (tid != 0) {
-			/*
-			 * Thread stack in /proc/PID/task/TID/maps or
-			 * the main process stack.
-			 */
-			if (!is_pid || (vma->vm_start <= mm->start_stack &&
-			    vma->vm_end >= mm->start_stack)) {
-				name = "[stack]";
-			} else {
-				/* Thread stack in /proc/PID/maps */
-				seq_pad(m, ' ');
-				seq_printf(m, "[stack:%d]", tid);
-			}
-			goto done;
-		}
-
-		if (vma_get_anon_name(vma)) {
-			seq_pad(m, ' ');
-			seq_print_vma_name(m, vma);
-		}
+		if (is_stack(priv, vma))
+			name = "[stack]";
 	}
 
 done:
@@ -1818,8 +1799,19 @@ static int show_numa_map(struct seq_file *m, void *v, int is_pid)
 		seq_path(m, &file->f_path, "\n\t= ");
 	} else if (vma->vm_start <= mm->brk && vma->vm_end >= mm->start_brk) {
 		seq_puts(m, " heap");
-	} else if (is_stack(proc_priv, vma)) {
-		seq_puts(m, " stack");
+	} else {
+		pid_t tid = pid_of_stack(proc_priv, vma, is_pid);
+		if (tid != 0) {
+			/*
+			 * Thread stack in /proc/PID/task/TID/maps or
+			 * the main process stack.
+			 */
+			if (!is_pid || (vma->vm_start <= mm->start_stack &&
+			    vma->vm_end >= mm->start_stack))
+				seq_puts(m, " stack");
+			else
+				seq_printf(m, " stack:%d", tid);
+		}
 	}
 
 	if (is_vm_hugetlb_page(vma))

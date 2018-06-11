@@ -74,11 +74,6 @@ static unsigned long cma_bitmap_aligned_offset(const struct cma *cma,
 		>> cma->order_per_bit;
 }
 
-static unsigned long cma_bitmap_maxno(struct cma *cma)
-{
-	return cma->count >> cma->order_per_bit;
-}
-
 static unsigned long cma_bitmap_pages_to_bits(const struct cma *cma,
 					      unsigned long pages)
 {
@@ -388,7 +383,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align)
 	trace_cma_alloc_start(count, align);
 
 	mask = cma_bitmap_aligned_mask(cma, align);
-	offset = cma_bitmap_aligned_mask(cma, align);
+	offset = cma_bitmap_aligned_offset(cma, align);
 	bitmap_maxno = cma_bitmap_maxno(cma);
 	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
 
