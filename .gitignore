@@ -70,6 +70,9 @@ Builds/
 aarch64-linux-android/
 linux-stable.sh
 out/
+build.sh
+setup.sh
+clang/
 
 # stgit generated dirs
 patches-*
