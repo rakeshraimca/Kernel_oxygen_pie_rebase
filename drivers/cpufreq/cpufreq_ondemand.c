@@ -28,7 +28,7 @@
 #define MAX_FREQUENCY_UP_THRESHOLD		(100)
 
 static DEFINE_PER_CPU(struct od_cpu_dbs_info_s, od_cpu_dbs_info);
-
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 static struct od_ops od_ops;
 
 #ifndef CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND

@@ -20,7 +20,7 @@
 #define DEF_FREQUENCY_STEP			(5)
 #define DEF_SAMPLING_DOWN_FACTOR		(1)
 #define MAX_SAMPLING_DOWN_FACTOR		(10)
-
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 static DEFINE_PER_CPU(struct cs_cpu_dbs_info_s, cs_cpu_dbs_info);
 
 static inline unsigned int get_freq_target(struct cs_dbs_tuners *cs_tuners,

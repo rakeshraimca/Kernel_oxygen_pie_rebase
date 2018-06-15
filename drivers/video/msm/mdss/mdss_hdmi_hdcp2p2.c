@@ -1044,7 +1044,7 @@ void *hdmi_hdcp2p2_init(struct hdmi_hdcp_init_data *init_data)
 	register_data.client_ctx = ctrl;
 	register_data.tethered = ctrl->tethered;
 
-	rc = hdcp_library_register(&register_data);
+//	rc = hdcp_library_register(&register_data);
 	if (rc) {
 		pr_err("Unable to register with HDCP 2.2 library\n");
 		goto error;

@@ -61,7 +61,7 @@
 #define SAMPLING_RATE			50000
 
 static void do_alucard_timer(struct work_struct *work);
-
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 struct cpufreq_alucard_cpuinfo {
 	u64 prev_cpu_wall;
 	u64 prev_cpu_idle;

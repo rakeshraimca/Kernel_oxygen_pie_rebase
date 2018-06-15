@@ -64,6 +64,8 @@
 
 static unsigned int min_sampling_rate;
 
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
+
 static void do_dbs_timer(struct work_struct *work);
 static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 				unsigned int event);

@@ -526,6 +526,7 @@ static ssize_t store_sampling_down_factor(struct kobject *a,
 	return count;
 }
 
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 /* ignore_nice_load */
 static ssize_t store_ignore_nice_load(struct kobject *a, struct attribute *b,
 				      const char *buf, size_t count)
@@ -819,10 +820,10 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		j_dbs_info->load_at_prev_sample = load_at_max_freq;
 	}
 
-	if (dbs_tuners_ins.sampling_rate < DEFAULT_SAMPLING_RATE)
+/*	if (dbs_tuners_ins.sampling_rate < DEFAULT_SAMPLING_RATE)
 		cpufreq_notify_utilization(policy, avg_load_at_max_freq);
 	else
-		cpufreq_notify_utilization(policy, load_at_max_freq);
+		cpufreq_notify_utilization(policy, load_at_max_freq);*/
 
 	/* Check for frequency increase */
 	if (policy->cur < dbs_tuners_ins.freq_responsiveness)

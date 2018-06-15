@@ -60,6 +60,8 @@
 #include <linux/tick.h>
 #include <linux/version.h>
 
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
+
 // #define ENABLE_SNAP_THERMAL_SUPPORT		// ZZ: Snapdragon temperature tripping support
 
 #if defined(CONFIG_THERMAL_TSENS8974) || defined(CONFIG_THERMAL_TSENS8960) && defined(ENABLE_SNAP_THERMAL_SUPPORT) // ZZ: Snapdragon temperature sensor

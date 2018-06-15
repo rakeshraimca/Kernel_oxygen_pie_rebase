@@ -34,7 +34,7 @@
 #include <linux/kernel_stat.h>
 #include <asm/cputime.h>
 #include <linux/input.h>
-
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 static int active_count;
 
 struct cpufreq_interactive_cpuinfo {

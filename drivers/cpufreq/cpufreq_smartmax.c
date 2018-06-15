@@ -45,6 +45,8 @@
 #include <linux/earlysuspend.h>
 #endif
 
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
+
 /******************** Tunable parameters: ********************/
 
 /*

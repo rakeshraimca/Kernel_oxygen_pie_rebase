@@ -36,7 +36,7 @@
 
 #include <asm/cputime.h>
 
-#define MAX_RT_PRIO
+//#define MAX_RT_PRIO
 
 static atomic_t active_count = ATOMIC_INIT(0);
 static unsigned long stored_timer_rate;

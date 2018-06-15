@@ -57,6 +57,8 @@
  */
 #define MIN_SAMPLING_RATE_RATIO			(2)
 
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
+
 static unsigned int min_sampling_rate;
 
 #define LATENCY_MULTIPLIER			(1000)

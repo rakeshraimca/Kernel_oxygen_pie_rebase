@@ -29,7 +29,7 @@
 #include <linux/ktime.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
-
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 #define MIN_SAMPLING_RATE	10000
 
 /*

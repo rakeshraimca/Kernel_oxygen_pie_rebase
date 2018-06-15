@@ -55,6 +55,7 @@ static unsigned int min_sampling_rate;
 #define MAX_SAMPLING_DOWN_FACTOR		(10)
 #define TRANSITION_LATENCY_LIMIT		(10 * 1000 * 1000)
 
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 static void do_dbs_timer(struct work_struct *work);
 
 struct cpu_dbs_info_s {

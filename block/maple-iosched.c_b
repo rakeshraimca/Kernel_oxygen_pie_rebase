@@ -18,7 +18,7 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/state_notifier.h>
-
+extern bool state_suspended;
 #define MAPLE_IOSCHED_PATCHLEVEL	(8)
 
 enum { ASYNC, SYNC };

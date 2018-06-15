@@ -38,7 +38,7 @@
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/cpufreq_barry_allen.h>
-
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 static int active_count;
 
 static bool ba_locked = false;

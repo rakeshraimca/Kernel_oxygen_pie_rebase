@@ -21,7 +21,7 @@
 #include <linux/slab.h>
 
 #include "cpufreq_governor.h"
-
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 static struct attribute_group *get_sysfs_attr(struct dbs_data *dbs_data)
 {
 	if (have_governor_per_policy())

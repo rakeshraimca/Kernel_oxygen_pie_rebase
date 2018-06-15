@@ -29,7 +29,7 @@
 #include <linux/tick.h>
 #include <asm/smp_plat.h>
 #include <linux/suspend.h>
-
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 #define MAX_LONG_SIZE 24
 #define DEFAULT_RQ_POLL_JIFFIES 1
 #define DEFAULT_DEF_TIMER_JIFFIES 5

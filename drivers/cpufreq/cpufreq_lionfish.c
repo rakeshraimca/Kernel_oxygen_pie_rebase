@@ -31,7 +31,7 @@
 
 #define LIONFISH_VERSION_MAJOR		(1)
 #define LIONFISH_VERSION_MINOR		(1)
-
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 /************************** type definitions ****************************/
 struct lf_cpu_dbs_info_s {
 	struct cpu_dbs_common_info cdbs;

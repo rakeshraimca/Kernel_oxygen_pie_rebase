@@ -52,7 +52,7 @@
 #define FREQ_FOR_RESPONSIVENESS			(2265600)
 
 static u64 electrodemand_freq_boosted_time;
-
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 /*
  * The polling frequency of this governor depends on the capability of
  * the processor. Default polling frequency is 1000 times the transition
@@ -819,10 +819,10 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		j_dbs_info->load_at_prev_sample = load_at_max_freq;
 	}
 
-	if (dbs_tuners_ins.sampling_rate < DEFAULT_SAMPLING_RATE)
+/*	if (dbs_tuners_ins.sampling_rate < DEFAULT_SAMPLING_RATE)
 		cpufreq_notify_utilization(policy, avg_load_at_max_freq);
 	else
-		cpufreq_notify_utilization(policy, load_at_max_freq);
+		pufreq_notify_utilization(policy, load_at_max_freq);*/
 
 	/* Check for frequency increase */
 	if (policy->cur < dbs_tuners_ins.freq_responsiveness)

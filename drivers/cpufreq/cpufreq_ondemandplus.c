@@ -57,7 +57,7 @@
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/cpufreq_ondemandplus.h>
-
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 static atomic_t active_count = ATOMIC_INIT(0);
 
 struct cpufreq_ondemandplus_cpuinfo {

@@ -287,13 +287,13 @@ static int hdmi_hdcp_load_keys(void *input)
 	}
 
 	if (use_sw_keys) {
-		if (hdcp1_set_keys(&aksv_msb, &aksv_lsb)) {
+		//if (hdcp1_set_keys(&aksv_msb, &aksv_lsb)) {
 			pr_err("%s: setting hdcp SW keys failed\n", __func__);
 			rc = -EINVAL;
 			goto end;
-		}
+		
 	} else {
-		/* Fetch aksv from QFPROM, this info should be public. */
+	//	 Fetch aksv from QFPROM, this info should be public. 
 		ksv_lsb_addr = HDCP_KSV_LSB;
 		ksv_msb_addr = HDCP_KSV_MSB;
 

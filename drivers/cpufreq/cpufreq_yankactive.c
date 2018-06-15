@@ -37,7 +37,7 @@
 #include <trace/events/cpufreq_yankactive.h>
 
 #define DEFAULT_HISPEED_FREQ	1728000
-
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 static int active_count;
 
 struct cpufreq_yankactive_cpuinfo {

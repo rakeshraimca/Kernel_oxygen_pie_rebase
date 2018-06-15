@@ -26,7 +26,7 @@
 #ifdef CONFIG_STATE_NOTIFIER
 #include <linux/state_notifier.h>
 #endif
-
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy);
 struct cpufreq_impulse_policyinfo {
 	struct timer_list policy_timer;
 	struct timer_list policy_slack_timer;

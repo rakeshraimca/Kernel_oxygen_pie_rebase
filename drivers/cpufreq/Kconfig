@@ -634,8 +634,10 @@ config CPU_FREQ_GOV_HYPER
 	'hyper' - A tweaked "ondemand" based smart and smooth optimized governor!
 	If in doubt, say N.
 
-config CPU_FREQ_GOV_WAVE
+config CPU_FREQ_GOV_WAVE        
 	tristate "'wave' cpufreq governor"
+        depends on CPU_FREQ
+        ---help---
  	  If in doubt, say N.
 
 config FINGERPRINT_BOOST

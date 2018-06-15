@@ -1462,13 +1462,13 @@ static void hdmi_tx_hdcp_cb_work(struct work_struct *work)
 		}
 
 		if (hdmi_ctrl->hdcp1_use_sw_keys && hdmi_ctrl->hdcp14_present)
-			hdcp1_set_enc(true);
+			//hdcp1_set_enc(true);
 		break;
 	case HDCP_STATE_AUTH_FAIL:
-		if (hdmi_ctrl->hdcp1_use_sw_keys && hdmi_ctrl->hdcp14_present) {
+		/*if (hdmi_ctrl->hdcp1_use_sw_keys && hdmi_ctrl->hdcp14_present) {
 			if (hdmi_ctrl->auth_state)
-				hdcp1_set_enc(false);
-		}
+				//hdcp1_set_enc(false);
+		}*/
 
 		hdmi_ctrl->auth_state = false;
 
@@ -2074,9 +2074,9 @@ static void hdmi_tx_update_hdcp_info(struct hdmi_tx_ctrl *hdmi_ctrl)
 		hdmi_ctrl->hdcp22_present = false;
 
 	if (!hdmi_ctrl->hdcp22_present) {
-		if (hdmi_ctrl->hdcp1_use_sw_keys)
-			hdmi_ctrl->hdcp14_present =
-				hdcp1_check_if_supported_load_app();
+		//if (hdmi_ctrl->hdcp1_use_sw_keys)
+		//	hdmi_ctrl->hdcp14_present =
+				//hdcp1_check_if_supported_load_app();
 
 		if (hdmi_ctrl->hdcp14_present) {
 			fd = hdmi_tx_get_fd(HDMI_TX_FEAT_HDCP);
