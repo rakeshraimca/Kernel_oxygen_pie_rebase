@@ -4389,9 +4389,7 @@ hub_port_init (struct usb_hub *hub, struct usb_device *udev, int port1,
 						r = -EPROTO;
 					break;
 				}
-				if (r == 0)
-						retries == 0 &&
-						udev->speed > USB_SPEED_FULL))
+				if (r == 0 && udev->speed > USB_SPEED_FULL) 
 					break;
 			}
 			udev->descriptor.bMaxPacketSize0 =

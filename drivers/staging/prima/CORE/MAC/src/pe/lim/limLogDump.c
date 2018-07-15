@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013, 2016 The Linux Foundation. All rights reserved.
+ * Copyright (c) 2012-2013, 2016-2017 The Linux Foundation. All rights reserved.
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -305,7 +305,7 @@ char *dumpLim( tpAniSirGlobal pMac, char *p, tANI_U32 sessionId)
  ******************************************/
 char *triggerBeaconGen( tpAniSirGlobal pMac, char *p )
 {
-    tSirMsgQ mesg = { (tANI_U16) SIR_LIM_BEACON_GEN_IND, (tANI_U16) 0, NULL };
+    tSirMsgQ mesg = { (tANI_U16) SIR_LIM_BEACON_GEN_IND, (tANI_U16) 0, (tANI_U32) 0 };
     
     pMac->lim.gLimSmeState = eLIM_SME_NORMAL_STATE;
     MTRACE(macTrace(pMac, TRACE_CODE_SME_STATE, NO_SESSION, pMac->lim.gLimSmeState));
@@ -2142,7 +2142,7 @@ dump_lim_ft_event( tpAniSirGlobal pMac, tANI_U32 arg1, tANI_U32 arg2, tANI_U32 a
                    p += log_sprintf( pMac, p, "%s: Session %02x %02x %02x\n", __func__, 
                             psessionEntry->bssId[0],
                             psessionEntry->bssId[1], psessionEntry->bssId[2]);
-                   p += log_sprintf( pMac, p, "%s: Session %02x %02x %02x %p\n", __func__, 
+                   p += log_sprintf( pMac, p, "%s: Session %02x %02x %02x %pK\n", __func__, 
                             pftPreAuthReq->currbssId[0],
                             pftPreAuthReq->currbssId[1], 
                             pftPreAuthReq->currbssId[2], pftPreAuthReq);

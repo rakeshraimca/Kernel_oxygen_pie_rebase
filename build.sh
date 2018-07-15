@@ -1,18 +1,19 @@
 #!/bin/bash
 kernel_dir=$PWD
 export V="$(date +'%d%m%Y-%H%M%S')"
-export CONFIG_FILE="baka_defconfig"
+#export CONFIG_FILE="oxygen_user_defconfig"
+export CONFIG_FILE="miui_oxygen_defconfig"
 export ARCH=arm64
 export SUBARCH=arm64
-export LOCALVERSION="-V9"
-export CROSS_COMPILE="${kernel_dir}/aarch64-linux-android/bin/aarch64-linux-android-"
+export LOCALVERSION="_${V}"
+export CROSS_COMPILE="${kernel_dir}/../../../UBERTC/bin/aarch64-linux-android-"
 export PATH=$PATH:${TOOL_CHAIN_PATH}
 export out_dir="${kernel_dir}/out/"
 export builddir="${kernel_dir}/Builds"
 export ANY_KERNEL2_DIR="${kernel_dir}/AnyKernel2"
-export ZIP_NAME="baka-${V}.zip"
+export ZIP_NAME="Hardrock-rr_fixOCv9.zip"
 export IMAGE="${out_dir}arch/arm64/boot/Image.gz-dtb";
-export STRIP_KO="${kernel_dir}/aarch64-linux-android/aarch64-common-linux-android/bin/strip"
+export STRIP_KO="${kernel_dir}/../../GCC/aarch64-linux-android/bin/strip"
 JOBS="-j$(nproc --all)"
 cd $kernel_dir
 
@@ -35,7 +36,7 @@ zipit () {
     fi
     echo "**** Copying Image ****"
     cp ${out_dir}arch/arm64/boot/Image.gz-dtb ${ANY_KERNEL2_DIR}/
-    find ${out_dir} -name '*.ko' -exec ${STRIP_KO} -g {}  \;
+    find ${out_dir} -name '*.ko' -exec ${STRIP_KO} --strip-unneeded {} &> /dev/null  \;
     find ${out_dir} -name '*.ko' -exec cp {} ${ANY_KERNEL2_DIR}/modules/system/lib/modules/ \; 
     cp ${out_dir}drivers/staging/prima/wlan.ko ${ANY_KERNEL2_DIR}/modules/system/lib/modules/pronto/pronto_wlan.ko
     cd ${ANY_KERNEL2_DIR}/
