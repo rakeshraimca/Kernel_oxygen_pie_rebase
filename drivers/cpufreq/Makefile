@@ -41,6 +41,10 @@ obj-$(CONFIG_CPU_FREQ_GOV_IMPULSE)	+= cpufreq_impulse.o
 obj-$(CONFIG_CPU_FREQ_GOV_ELECTRON)	+= cpufreq_electron.o
 obj-$(CONFIG_CPU_FREQ_GOV_INTERACTIVE_PRO) += cpufreq_interactive_pro.o
 obj-$(CONFIG_CPU_FREQ_GOV_ZZMOOVE)      += cpufreq_zzmoove.o
+obj-$(CONFIG_CPU_FREQ_GOV_DYNAMIC_INTERACTIVE)      += cpufreq_dynamic_interactive.o
+obj-$(CONFIG_CPU_FREQ_GOV_SMARTMAX_EPS)      += cpufreq_smartmax_eps.o
+#obj-$(CONFIG_CPU_FREQ_GOV_RAGINGMOLASSES)      += cpufreq_ragingmolasses.o
+obj-$(CONFIG_CPU_FREQ_GOV_CULTIVATION)   += cpufreq_cultivation.o
 obj-$(CONFIG_CPU_BOOST)			+= cpu-boost.o
 obj-$(CONFIG_FINGERPRINT_BOOST)		+= fp-boost.o
 
