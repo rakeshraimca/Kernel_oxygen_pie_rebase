@@ -36,6 +36,13 @@ static DEFINE_SPINLOCK(suspend_lock);
  * MIN_BUSY is 1 msec for the sample to be sent
  */
 #define MIN_BUSY		1000
+/*
+ * Use BUSY_BIN to check for fully busy rendering
+ * intervals that may need early intervention when
+ * seen with LONG_FRAME lengths
+ */
+#define BUSY_BIN		95
+#define LONG_FRAME		25000
 #define MAX_TZ_VERSION		0
 
 /*
@@ -375,6 +382,17 @@ static int tz_init(struct devfreq_msm_adreno_tz_data *priv,
 	return ret;
 }
 
+#ifdef CONFIG_SIMPLE_GPU_ALGORITHM
+extern int simple_gpu_active;
+extern int simple_gpu_algorithm(int level, int *val,
+				struct devfreq_msm_adreno_tz_data *priv);
+#endif
+
+#ifdef CONFIG_ADRENO_IDLER
+extern int adreno_idler(struct devfreq_dev_status stats, struct devfreq *devfreq,
+		 unsigned long *freq);
+#endif
+
 static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq,
 				u32 *flag)
 {
@@ -384,7 +402,7 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq,
 	int val, level = 0;
 	unsigned int scm_data[4];
 	int context_count = 0;
-
+        static int busy_bin, frame_flag;
 	/* keeps stats.private_data == NULL   */
 	result = devfreq->profile->get_dev_status(devfreq->dev.parent, &stats);
 	if (result) {
@@ -392,7 +410,19 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq,
 		return result;
 	}
 
+	/* Prevent overflow */
+	if (stats.busy_time >= (1 << 24) || stats.total_time >= (1 << 24)) {
+		stats.busy_time >>= 7;
+		stats.total_time >>= 7;
+	}
+
 	*freq = stats.current_frequency;
+#ifdef CONFIG_ADRENO_IDLER
+	if (adreno_idler(stats, devfreq, freq)) {
+		/* adreno_idler has asked to bail out now */
+		return 0;
+	}
+#endif
 	priv->bin.total_time += stats.total_time;
 #if 1
 	// scale busy time up based on adrenoboost parameter, only if MIN_BUSY exceeded...
@@ -421,6 +451,14 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq,
 		(unsigned int) priv->bin.busy_time < MIN_BUSY) {
 		return 0;
 	}
+        if ((stats.busy_time * 100 / stats.total_time) > BUSY_BIN) {
+		busy_bin += stats.busy_time;
+		if (stats.total_time > LONG_FRAME)
+			frame_flag = 1;
+	} else {
+		busy_bin = 0;
+		frame_flag = 0;
+	}
 
 	level = devfreq_get_freq_level(devfreq, stats.current_frequency);
 	if (level < 0) {
@@ -432,17 +470,31 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq,
 	 * If there is an extended block of busy processing,
 	 * increase frequency.  Otherwise run the normal algorithm.
 	 */
-	if (!priv->disable_busy_time_burst &&
-			priv->bin.busy_time > CEILING) {
+	if ((!priv->disable_busy_time_burst &&
+			priv->bin.busy_time > CEILING) || (busy_bin > CEILING && frame_flag)) {
 		val = -1 * level;
+                busy_bin = 0;
+		frame_flag = 0;
 	} else {
-
+#ifdef CONFIG_SIMPLE_GPU_ALGORITHM
+		if (simple_gpu_active) {
+			simple_gpu_algorithm(level, &val, priv);
+		} else {
+			scm_data[0] = level;
+			scm_data[1] = priv->bin.total_time;
+			scm_data[2] = priv->bin.busy_time;
+			scm_data[3] = context_count;
+			__secure_tz_update_entry3(scm_data, sizeof(scm_data),
+						&val, sizeof(val), priv);
+		}
+#else
 		scm_data[0] = level;
 		scm_data[1] = priv->bin.total_time;
 		scm_data[2] = priv->bin.busy_time;
 		scm_data[3] = context_count;
 		__secure_tz_update_entry3(scm_data, sizeof(scm_data),
 					&val, sizeof(val), priv);
+#endif
 	}
 	priv->bin.total_time = 0;
 	priv->bin.busy_time = 0;
