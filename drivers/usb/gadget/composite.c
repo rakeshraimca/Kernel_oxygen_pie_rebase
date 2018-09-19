@@ -1752,6 +1752,7 @@ composite_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 			break;
 
 		spin_lock(&cdev->lock);
+                 /*
 		 * upon set config#1. Call set_alt for non-zero
 		 * alternate setting.
 		 */

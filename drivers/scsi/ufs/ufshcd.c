@@ -51,7 +51,7 @@
 #include <trace/events/ufs.h>
 
 #ifdef CONFIG_DEBUG_FS
-
+bool needs_reset = false;
 static int ufshcd_tag_req_type(struct request *rq)
 {
 	int rq_type = TS_WRITE;
@@ -5626,7 +5626,7 @@ static void ufshcd_err_handler(struct work_struct *work)
 	    (hba->saved_uic_err & (UFSHCD_UIC_DL_PA_INIT_ERROR |
 				   UFSHCD_UIC_DL_NAC_RECEIVED_ERROR |
 				   UFSHCD_UIC_DL_TCx_REPLAY_ERROR))))
-		needs_reset = true;
+	needs_reset = true;
 
 	/*
 	 * if host reset is required then skip clearing the pending
