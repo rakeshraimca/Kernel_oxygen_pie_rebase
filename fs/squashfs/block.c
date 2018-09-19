@@ -360,6 +360,8 @@ static int read_metadata_block(struct squashfs_read_request *req,
 		req->length = msblk->bytes_used - req->index;
 	req->data_processing = SQUASHFS_METADATA;
 
+		if (!msblk->stream)
+			goto read_failure;
 	/*
 	 * Reading metadata is always synchronous because we don't know the
 	 * length in advance and the function is expected to update

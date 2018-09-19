@@ -5442,7 +5442,7 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
 	hba = container_of(work, struct ufs_hba, eeh_work);
 
 	pm_runtime_get_sync(hba->dev);
-	ufshcd_scsi_block_requests(hba);
+	scsi_block_requests(hba->host);
 	err = ufshcd_get_ee_status(hba, &status);
 	if (err) {
 		dev_err(hba->dev, "%s: failed to get exception status %d\n",
@@ -5451,12 +5451,14 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
 	}
 
 	status &= hba->ee_ctrl_mask;
-
-	if (status & MASK_EE_URGENT_BKOPS)
-		ufshcd_bkops_exception_event_handler(hba);
-
+	if (status & MASK_EE_URGENT_BKOPS) {
+		err = ufshcd_urgent_bkops(hba);
+		if (err < 0)
+			dev_err(hba->dev, "%s: failed to handle urgent bkops %d\n",
+					__func__, err);
+	}
 out:
-	ufshcd_scsi_unblock_requests(hba);
+	scsi_unblock_requests(hba->host);
 	pm_runtime_put_sync(hba->dev);
 	return;
 }
@@ -5570,18 +5572,21 @@ static void ufshcd_err_handler(struct work_struct *work)
 {
 	struct ufs_hba *hba;
 	unsigned long flags;
-	bool err_xfer = false, err_tm = false;
+	u32 err_xfer = 0;
+	u32 err_tm = 0;
 	int err = 0;
 	int tag;
-	bool needs_reset = false;
 
 	hba = container_of(work, struct ufs_hba, eh_work);
 
-	spin_lock_irqsave(hba->host->host_lock, flags);
-	ufsdbg_set_err_state(hba);
+	pm_runtime_get_sync(hba->dev);
+	ufshcd_hold(hba, false);
 
-	if (hba->ufshcd_state == UFSHCD_STATE_RESET)
+	spin_lock_irqsave(hba->host->host_lock, flags);
+	if (hba->ufshcd_state == UFSHCD_STATE_RESET) {
+		spin_unlock_irqrestore(hba->host->host_lock, flags);
 		goto out;
+	}
 
 	hba->ufshcd_state = UFSHCD_STATE_RESET;
 	ufshcd_set_eh_in_progress(hba);
