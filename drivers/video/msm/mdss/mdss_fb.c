@@ -1733,7 +1733,7 @@ void mdss_fb_set_backlight(struct msm_fb_data_type *mfd, u32 bkl_lvl)
 	u32 temp = bkl_lvl;
 	bool ad_bl_notify_needed = false;
 	bool bl_notify_needed = false;
-	bool twm_en = false;
+	//bool twm_en = false;
 
 	if ((((mdss_fb_is_power_off(mfd) && mfd->dcm_state != DCM_ENTER)
 		|| !mfd->allow_bl_update) && !IS_CALIB_MODE_BL(mfd)) ||
@@ -1783,7 +1783,7 @@ void mdss_fb_set_backlight(struct msm_fb_data_type *mfd, u32 bkl_lvl)
 				mfd->bl_level = bkl_lvl;
 				mfd->bl_level_scaled = temp;
 			}
-		}
+		
 		if (ad_bl_notify_needed)
 			mdss_fb_bl_update_notify(mfd,
 				NOTIFY_TYPE_BL_AD_ATTEN_UPDATE);
