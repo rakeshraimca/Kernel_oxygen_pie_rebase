@@ -1,4 +1,4 @@
-/* Copyright (c) 2015-2016, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2017, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -9,16 +9,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-#ifndef __QPNP_HAPTIC_H
-#define __QPNP_HAPTIC_H
 
-/* interface for the other module to play different sequences */
-#ifdef CONFIG_QPNP_HAPTIC
-int qpnp_hap_play_byte(u8 data, bool on);
+#ifndef _QPNP_PBS_H
+#define _QPNP_PBS_H
+
+#ifdef CONFIG_QPNP_PBS
+int qpnp_pbs_trigger_event(struct device_node *dev_node, u8 bitmap);
 #else
-static inline int qpnp_hap_play_byte(u8 data, bool on)
+static inline int qpnp_pbs_trigger_event(struct device_node *dev_node,
+						 u8 bitmap)
 {
-	return 0;
+	return -ENODEV;
 }
 #endif
+
 #endif
