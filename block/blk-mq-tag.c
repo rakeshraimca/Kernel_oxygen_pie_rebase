@@ -258,7 +258,7 @@ static int bt_get(struct blk_mq_alloc_data *data,
 
 		blk_mq_put_ctx(data->ctx);
 
-		io_schedule();
+		//io_schedule();
 
 		data->ctx = blk_mq_get_ctx(data->q);
 		data->hctx = data->q->mq_ops->map_queue(data->q,

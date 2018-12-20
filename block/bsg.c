@@ -163,7 +163,7 @@ static int bsg_io_schedule(struct bsg_device *bd)
 
 	prepare_to_wait(&bd->wq_done, &wait, TASK_UNINTERRUPTIBLE);
 	spin_unlock_irq(&bd->lock);
-	io_schedule();
+	//io_schedule();
 	finish_wait(&bd->wq_done, &wait);
 
 	return ret;

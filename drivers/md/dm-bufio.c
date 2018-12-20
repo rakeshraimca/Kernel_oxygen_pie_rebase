@@ -738,7 +738,7 @@ static void __wait_for_free_buffer(struct dm_bufio_client *c)
 	set_task_state(current, TASK_UNINTERRUPTIBLE);
 	dm_bufio_unlock(c);
 
-	io_schedule();
+	//io_schedule();
 
 	remove_wait_queue(&c->free_buffer_wait, &wait);
 

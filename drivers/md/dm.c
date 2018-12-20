@@ -40,7 +40,7 @@ EXPORT_SYMBOL(dm_ratelimit_state);
  */
 #define DM_COOKIE_ENV_VAR_NAME "DM_COOKIE"
 #define DM_COOKIE_LENGTH 24
-
+void io_schedule(void);
 static const char *_name = DM_NAME;
 
 static unsigned int major = 0;
@@ -2660,7 +2660,7 @@ static int dm_wait_for_completion(struct mapped_device *md, int interruptible)
 			break;
 		}
 
-		io_schedule();
+		//io_schedule();
 	}
 	set_current_state(TASK_RUNNING);
 
@@ -3020,6 +3020,7 @@ struct gendisk *dm_disk(struct mapped_device *md)
 {
 	return md->disk;
 }
+EXPORT_SYMBOL_GPL(dm_disk);
 
 struct kobject *dm_kobject(struct mapped_device *md)
 {
@@ -3093,7 +3094,7 @@ struct dm_md_mempools *dm_alloc_md_mempools(unsigned type, unsigned integrity, u
 	if (!pools->io_pool)
 		goto out;
 
-	pools->bs = bioset_create_nobvec(pool_size, front_pad);
+	pools->bs = bioset_create(pool_size, front_pad);
 	if (!pools->bs)
 		goto out;
 

@@ -589,7 +589,7 @@ __sched int bit_wait_io(struct wait_bit_key *word)
 {
 	if (signal_pending_state(current->state, current))
 		return 1;
-	io_schedule();
+	//io_schedule();
 	return 0;
 }
 EXPORT_SYMBOL(bit_wait_io);
