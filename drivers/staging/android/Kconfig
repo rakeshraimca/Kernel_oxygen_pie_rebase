@@ -32,6 +32,18 @@ config ANDROID_BINDER_IPC_32BIT
 
 	  Note that enabling this will break newer Android user-space.
 
+config ANDROID_BINDER_DEVICES
+	string "Android Binder devices"
+	depends on ANDROID_BINDER_IPC
+	default "binder,hwbinder,vndbinder"
+	---help---
+	  Default value for the binder.devices parameter.
+
+	  The binder.devices parameter is a comma-separated list of strings
+	  that specifies the names of the binder device nodes that will be
+	  created. Each binder device has its own context manager, and is
+	  therefore logically separated from the other devices.
+
 config ASHMEM
 	bool "Enable the Anonymous Shared Memory Subsystem"
 	default n
@@ -125,18 +137,6 @@ config ONESHOT_SYNC_USER
 	depends on SYNC
 	help
 	  Provide a userspace API for creating oneshot sync objects.
-
-config ANDROID_WHETSTONE
-	bool "Android Whetstone"
-	default N
-	---help---
-	  report to whetstone the memory state when reach target limit value.
-
-config MULTIPLE_LMK
-	bool "Multiple lowmemorykiller"
-	default n
-	---help---
-	  Provide multiple kill in LMK routine
 
 source "drivers/staging/android/ion/Kconfig"
 
